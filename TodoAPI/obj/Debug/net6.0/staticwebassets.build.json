@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "z78GkxuxSyPLG+5ZrBoEggyfR55SFs4O0+ADJ0gBF+k=",
+  "Hash": "ejzv7NP02dItyGu6vhxj0IpqsPQ1D9gAz/tcsgGEErI=",
   "Source": "TodoAPI",
   "BasePath": "_content/TodoAPI",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "TodoAPI\\wwwroot",
       "Source": "TodoAPI",
-      "ContentRoot": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\",
+      "ContentRoot": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\",
       "BasePath": "_content/TodoAPI",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\CSS\\site.css",
+      "Identity": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\CSS\\site.css",
       "SourceId": "TodoAPI",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\",
+      "ContentRoot": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\",
       "BasePath": "_content/TodoAPI",
       "RelativePath": "CSS/site.css",
       "AssetKind": "All",
@@ -34,10 +34,10 @@
       "OriginalItemSpec": "wwwroot\\CSS\\site.css"
     },
     {
-      "Identity": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\index.html",
+      "Identity": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\index.html",
       "SourceId": "TodoAPI",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\",
+      "ContentRoot": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\",
       "BasePath": "_content/TodoAPI",
       "RelativePath": "index.html",
       "AssetKind": "All",
@@ -51,10 +51,10 @@
       "OriginalItemSpec": "wwwroot\\index.html"
     },
     {
-      "Identity": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\JS\\site.js",
+      "Identity": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\JS\\site.js",
       "SourceId": "TodoAPI",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\Renish\\GitLab\\TodoAPI\\TodoAPI\\wwwroot\\",
+      "ContentRoot": "D:\\Renish\\GitHub\\TodoAPI\\TodoAPI\\wwwroot\\",
       "BasePath": "_content/TodoAPI",
       "RelativePath": "JS/site.js",
       "AssetKind": "All",
