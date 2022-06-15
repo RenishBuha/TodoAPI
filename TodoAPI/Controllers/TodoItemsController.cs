@@ -1,8 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using TodoAPI.Mappers;
 using TodoAPI.Models;
+using TodoAPI.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace TodoAPI.Controllers
 {
@@ -10,179 +11,135 @@ namespace TodoAPI.Controllers
     [ApiController]
     public class TodoItemsController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly IToDoService _toDoService;
 
-        public TodoItemsController(TodoContext context)
+        public TodoItemsController(IToDoService toDoService)
         {
-            _context = context;
+            _toDoService = toDoService;
         }
 
-        // GET: api/TodoItems/GetTodoItems
+        /// <summary>
+        /// GET: api/TodoItems
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        //[Produces("application/xml")]
-        [Route("GetTodoItems", Name = "TodoItems")]
-        public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
+        public ActionResult<IEnumerable<TodoItemDTO>> GetTodoItems()
         {
-            if (_context.TodoItems == null)
-            {
-                return NotFound();
-            }
-            return await _context.TodoItems.Select(x => ItemToDTO(x)).ToListAsync();
+            return _toDoService.GetAll();
         }
-
-        // GET: api/TodoItems/GetTodoItems/5
-        [HttpGet]
-        [Route("GetTodoItems/{id}")]
+        
+        /// <summary>
+        /// GET: api/TodoItems/5 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
         {
-            if (_context.TodoItems == null)
-            {
-                return NotFound();
-            }
-
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = await _toDoService.FindByIdAsync(id);
 
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            return ItemToDTO(todoItem);
+            return todoItem;
         }
 
-        // POST: api/TodoItems/PostTodoItem
+        /// <summary>
+        /// POST: api/TodoItems
+        /// </summary>
+        /// <returns></returns>
+        // 
         [HttpPost]
-        [Route("PostTodoItem")]
-        public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoItemDTO)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesDefaultResponseType]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> PostTodoItem(TodoItemDTO todoItemDTO)
         {
-            var todoItem = new TodoItem()
+            if (todoItemDTO == null)
             {
-                Name = todoItemDTO.Name,
-                IsComplete = todoItemDTO.IsComplete
-            };
+                return NotFound();
+            }
 
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
-            //return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            await _toDoService.Add(todoItemDTO);
+            return NoContent();
         }
 
-        // PUT: api/TodoItems/PutTodoItem/5
-        [HttpPut]
-        [Route("PutTodoItem/{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoItemDTO)
+        // PUT: api/TodoItems/5
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> PutTodoItem([FromRoute] long id, TodoItemDTO todoItemDTO)
         {
             if (id != todoItemDTO.Id)
             {
                 return BadRequest();
             }
 
-            var todoItem = await _context.TodoItems.FindAsync(id);
-            if(todoItem == null)
+            bool IsExists = _toDoService.IsItemExists(todoItemDTO.Id);
+            if (!IsExists)
             {
                 return NotFound();
             }
 
-            todoItem.Name = todoItemDTO.Name;
-            todoItem.IsComplete = todoItemDTO.IsComplete;
+            await _toDoService.Update(id, todoItemDTO);
+            return NoContent();
+        }
 
-            try
+        /// <summary>
+        /// DELETE: api/TodoItems/5 
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> DeleteTodoItem([FromRoute] long id)
+        {
+            bool IsExists = _toDoService.IsItemExists(id);
+            if (!IsExists)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _toDoService.Delete(id);
 
             return NoContent();
         }
 
-        // DELETE: api/TodoItems/DeleteTodoItem/5
-        [HttpDelete]
-        [Route("DeleteTodoItem/{id}")]
-        public async Task<IActionResult> DeleteTodoItem(long id)
-        {
-            if (_context.TodoItems == null)
-            {
-                return NotFound();
-            }
-            var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem == null)
-            {
-                return NotFound();
-            }
-
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool TodoItemExists(long id)
-        {
-            return (_context.TodoItems?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-
-        private static TodoItemDTO ItemToDTO(TodoItem todoItem) =>
-           new TodoItemDTO
-           {
-               Id = todoItem.Id,
-               Name = todoItem.Name,
-               IsComplete = todoItem.IsComplete
-           };
-
-        // GET: api/TodoItems/GetTodoItemsWithFormat
+        /// <summary>
+        /// GET: api/TodoItems/GetTodoItemsWithFormat 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetTodoItemsWithFormat.{format}"), FormatFilter]
-        //[Produces("application/xml")]
-        public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItemsWithFormat()
+        public ActionResult<IEnumerable<TodoItemDTO>> GetTodoItemsWithFormat()
         {
-            if (_context.TodoItems == null)
-            {
-                return NotFound();
-            }
-            return await _context.TodoItems.Select(x => ItemToDTO(x)).ToListAsync();
+            return _toDoService.GetAll();
         }
 
-        // POST: api/TodoItems/PostTodoItemWithFormat
+        /// <summary>
+        /// POST: api/TodoItems/PostTodoItemWithFormat 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("PostTodoItemWithFormat.{format}"), FormatFilter]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult<TodoItemDTO>> PostTodoItemWithFormat(TodoItemDTO todoItemDTO)
         {
-            var todoItem = new TodoItem()
+            if (todoItemDTO == null)
             {
-                Name = todoItemDTO.Name,
-                IsComplete = todoItemDTO.IsComplete
-            };
+                return NotFound();
+            }
 
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            await _toDoService.Add(todoItemDTO);
 
-            return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
-        }
-
-        // GET: api/TodoItems/GetTodoItemsWithDist
-        [HttpGet]
-        [Route("GetTodoItemsWithDist")]
-        public ActionResult GetTodoItemsWithDist()
-        {
-            IDictionary<TodoItemDTO, int> resource = new Dictionary<TodoItemDTO, int>
-            {
-                { new TodoItemDTO {Id = 1, Name = "Abc", IsComplete = true}, 0 },
-                { new TodoItemDTO {Id = 2, Name = "XYZ", IsComplete = false}, 1 },
-            };
-            string json = JsonConvert.SerializeObject(resource.ToList());
-            return Ok(json);
-            
-            //return Ok(JsonConvert.SerializeObject(resource));
-            //return Ok(resource);
+            return CreatedAtAction(nameof(GetTodoItem), new { id = todoItemDTO.Id }, todoItemDTO);
         }
     }
 }
