@@ -1,18 +1,19 @@
-﻿const uri = 'api/todoitems';
+﻿//const uri = 'https://localhost:7145/api/TodoItems';
+const uri = 'api/TodoItems';
 let todos = [];
 
-function getItem() {
+function getItems() {
     fetch(uri)
         .then(response => response.json())
         .then(data => _displayItems(data))
-        .catch(error => console.error('Unable to get item.', error));
+        .catch(error => console.error('Unable to get items.', error));
 }
 
 function addItem() {
-    const addNameTextbox = document.getElementById("add-name");
+    const addNameTextbox = document.getElementById('add-name');
 
     const item = {
-        isComplete = false,
+        isComplete: false,
         name: addNameTextbox.value.trim()
     };
 
@@ -20,7 +21,7 @@ function addItem() {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(item)
     })
@@ -30,6 +31,23 @@ function addItem() {
             addNameTextbox.value = '';
         })
         .catch(error => console.error('Unable to add item.', error));
+}
+
+function deleteItem(id) {
+    fetch(`${uri}/${id}`, {
+        method: 'DELETE'
+    })
+        .then(() => getItems())
+        .catch(error => console.error('Unable to delete item.', error));
+}
+
+function displayEditForm(id) {
+    const item = todos.find(item => item.id === id);
+
+    document.getElementById('edit-name').value = item.name;
+    document.getElementById('edit-id').value = item.id;
+    document.getElementById('edit-isComplete').checked = item.isComplete;
+    document.getElementById('editForm').style.display = 'block';
 }
 
 function updateItem() {
@@ -56,56 +74,39 @@ function updateItem() {
     return false;
 }
 
-function deleteItem(id) {
-    fetch(`${uri}/${id}`, {
-        method: 'DELETE'
-    })
-        .then(() => getItems())
-        .catch(error => console.error('Unable to delete item.', error));
-}
-
-function displayEditForm(id) {
-    const item = todos.find(Item => Item.id === id);
-
-    document.getElementById('edit-name').value = item.name;
-    document.getElementById('edit-id').value = item.id;
-    document.getElementById('edit-isComplete').checked = item.isComplete;
-    document.getElementById('editForm').style.display = 'block';
-}
-
 function closeInput() {
     document.getElementById('editForm').style.display = 'none';
 }
 
-function displayCount(itemcount) {
-    const name = (itemcount == 1) ? 'to-do' : 'to-dos';
+function _displayCount(itemCount) {
+    const name = (itemCount === 1) ? 'to-do' : 'to-dos';
 
-    document.getElementById('counter').innerHTML = `${itemcount},${name}`;
+    document.getElementById('counter').innerText = `${itemCount} ${name}`;
 }
 
-function _displayItem(data) {
-    const tbody = document.getElementById('todos');
-    tbody.innerHTML = '';
+function _displayItems(data) {
+    const tBody = document.getElementById('todos');
+    tBody.innerHTML = '';
 
     _displayCount(data.length);
 
-    const button = document.getElementById('button');
+    const button = document.createElement('button');
 
-    data.foreach(item => {
+    data.forEach(item => {
         let isCompleteCheckbox = document.createElement('input');
         isCompleteCheckbox.type = 'checkbox';
         isCompleteCheckbox.disabled = true;
         isCompleteCheckbox.checked = item.isComplete;
 
-        let editbutton = button.cloneNode(false);
-        editbutton.innerText = 'Edit';
-        editbutton.setAttribute('onclick', `displayEditForm(${item.id})`);
+        let editButton = button.cloneNode(false);
+        editButton.innerText = 'Edit';
+        editButton.setAttribute('onclick', `displayEditForm(${item.id})`);
 
-        let deletebutton = button.cloneNode(false);
-        editbutton.innerText = 'Delete';
-        editbutton.setAttribute('onclick', `deleteItem(${item.id})`);
+        let deleteButton = button.cloneNode(false);
+        deleteButton.innerText = 'Delete';
+        deleteButton.setAttribute('onclick', `deleteItem(${item.id})`);
 
-        let tr = tbody.insertRow();
+        let tr = tBody.insertRow();
 
         let td1 = tr.insertCell(0);
         td1.appendChild(isCompleteCheckbox);
@@ -115,10 +116,10 @@ function _displayItem(data) {
         td2.appendChild(textNode);
 
         let td3 = tr.insertCell(2);
-        td3.appendChild(editbutton);
+        td3.appendChild(editButton);
 
         let td4 = tr.insertCell(3);
-        td4.appendChild(deletebutton);
+        td4.appendChild(deleteButton);
     });
 
     todos = data;

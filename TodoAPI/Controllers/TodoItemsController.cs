@@ -23,6 +23,7 @@ namespace TodoAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        //[Produces("application/json")]
         public ActionResult<IEnumerable<TodoItemDTO>> GetTodoItems()
         {
             return _toDoService.GetAll();

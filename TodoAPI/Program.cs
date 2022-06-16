@@ -18,7 +18,6 @@ builder.Services.AddControllers()
     .AddXmlSerializerFormatters();
 
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.AddTransient<IToDoService, ToDoService>();
 
