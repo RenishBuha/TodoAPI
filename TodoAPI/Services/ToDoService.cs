@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TodoAPI.Mappers;
 using TodoAPI.Models;
 
@@ -17,6 +18,7 @@ namespace TodoAPI.Services
         Task Update(long id, TodoItemDTO todoItemDTO);
 
         Task Delete(long id);
+        Task<List<TodoItemDTO>> GetAllAsync();
     }
 
     public class ToDoService : IToDoService
@@ -71,6 +73,11 @@ namespace TodoAPI.Services
 
             _context.TodoItems.Remove(entity);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<TodoItemDTO>> GetAllAsync()
+        {
+            return await _context.TodoItems.Select(x => ToDoMapper.Map(x)).ToListAsync();
         }
     }
 }

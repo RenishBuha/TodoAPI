@@ -142,5 +142,38 @@ namespace TodoAPI.Controllers
 
             return CreatedAtAction(nameof(GetTodoItem), new { id = todoItemDTO.Id }, todoItemDTO);
         }
+
+        /// <summary>
+        /// GET: api/TodoItems/get-all
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("get-all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var result = await _toDoService.GetAllAsync();
+            if (result == null)
+            {
+                return NoContent();
+            }
+            else if (result.Count == 0)
+            {
+                return NoContent();
+            }
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// POST: api/TodoItems/save
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("save")]
+        public async Task<IActionResult> SaveAsync(TodoItemDTO todoItemDTO)
+        {
+            await _toDoService.Add(todoItemDTO);
+            return Ok();
+        }
     }
 }
