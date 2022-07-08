@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoAPI", "TodoAPI\TodoAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoAPI.Test", "TodoAPI.Test\TodoAPI.Test.csproj", "{0DFEDA3A-4A85-43E5-B74C-5B9FE102D240}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoAPI.TestNew", "TodoAPI.TestNew\TodoAPI.TestNew.csproj", "{9494D6C5-B69F-454E-A405-C0ECF71DB703}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoAPI.MockTest", "TodoAPI.MockTest\TodoAPI.MockTest.csproj", "{512F2BCE-C764-4B68-8ED4-FCA8791E86DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{0DFEDA3A-4A85-43E5-B74C-5B9FE102D240}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DFEDA3A-4A85-43E5-B74C-5B9FE102D240}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DFEDA3A-4A85-43E5-B74C-5B9FE102D240}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9494D6C5-B69F-454E-A405-C0ECF71DB703}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9494D6C5-B69F-454E-A405-C0ECF71DB703}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9494D6C5-B69F-454E-A405-C0ECF71DB703}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9494D6C5-B69F-454E-A405-C0ECF71DB703}.Release|Any CPU.Build.0 = Release|Any CPU
+		{512F2BCE-C764-4B68-8ED4-FCA8791E86DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512F2BCE-C764-4B68-8ED4-FCA8791E86DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512F2BCE-C764-4B68-8ED4-FCA8791E86DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512F2BCE-C764-4B68-8ED4-FCA8791E86DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

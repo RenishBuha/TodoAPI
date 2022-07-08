@@ -22,7 +22,7 @@ namespace TodoAPI.TestNew.System.Services
             _TodoContext.Database.EnsureCreated();
         }
 
-        //[Fact]
+        [Fact]
         public async Task GetAllAsync_Test()
         {
             //Arrange
@@ -39,7 +39,7 @@ namespace TodoAPI.TestNew.System.Services
             result.Should().HaveCount(TodoMockData.GetTodoData().Count);
         }
 
-        //[Fact]
+        [Fact]
         public async Task SaveAsync_Test()
         {
             //Arrange
