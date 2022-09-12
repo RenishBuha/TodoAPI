@@ -10,5 +10,6 @@ namespace TodoAPI.Models
         }
 
         public DbSet<TodoItem> TodoItems { get; set; } = null!;
+        public DbSet<UserInfo> UserInfos { get; set; } = null!;
     }
 }
