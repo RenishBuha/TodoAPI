@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TodoAPI.AuthMiddleware;
 using TodoAPI.Models;
 using TodoAPI.Services;
 
@@ -8,6 +9,7 @@ namespace TodoAPI.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    
     public class TodoItemsController : ControllerBase
     {
         private readonly IToDoService _toDoService;
@@ -65,7 +67,7 @@ namespace TodoAPI.Controllers
             }
 
             await _toDoService.Add(todoItemDTO);
-            return NoContent();
+            return Ok();
         }
 
         // PUT: api/TodoItems/5
@@ -88,7 +90,7 @@ namespace TodoAPI.Controllers
             }
 
             await _toDoService.Update(id, todoItemDTO);
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -109,7 +111,7 @@ namespace TodoAPI.Controllers
 
             await _toDoService.Delete(id);
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>

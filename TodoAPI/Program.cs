@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TodoAPI.Controllers;
+using System.Text.Json.Serialization;
+using TodoAPI.AuthMiddleware;
 using TodoAPI.Models;
 using TodoAPI.Services;
 
@@ -17,6 +18,11 @@ builder.Services.AddControllers(options =>
     options.RespectBrowserAcceptHeader = true;
 });
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
+
 builder.Services.AddControllers()
     .AddXmlDataContractSerializerFormatters()
     .AddXmlSerializerFormatters();
@@ -24,6 +30,16 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.AddTransient<IToDoService, ToDoService>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CustomAuthOptions.DefaultScheme;
+    options.DefaultChallengeScheme = CustomAuthOptions.DefaultScheme;
+})
+.AddCustomAuth(options =>
+{
+    options.AuthTypes = "JWT";
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
 {
@@ -53,4 +69,5 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+//app.UseMiddleware<TokenValidatorHandler>();
 app.Run();
