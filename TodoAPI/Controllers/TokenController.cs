@@ -4,6 +4,7 @@ using TodoAPI.Models;
 using Bethubs.Auth;
 using TodoAPI.Auth;
 using Microsoft.AspNetCore.Authorization;
+using TodoAPI.Web;
 
 namespace TodoAPI.Controllers
 {
@@ -40,14 +41,14 @@ namespace TodoAPI.Controllers
                         Username = user.UserName,
                         Role = user.Role,
                         Email = user.Email,
-                        Expiration = DateTime.Now.AddHours(24),
-                        IpAddress = "18.135.7.48"
+                        Expiration = DateTime.Now.AddMinutes(2),
+                        IpAddress = "192.168.1.8",
                     };
 
                     var token = AuthUtil.EncodeToken(tokenData, _configuration["Jwt:Key"]);
 
                     CookieOptions cookieexpire = new CookieOptions();
-                    cookieexpire.Expires = DateTime.Now.AddHours(24);
+                    cookieexpire.Expires = DateTime.Now.AddMinutes(2);
                     Response.Cookies.Append("JwtToken", token, cookieexpire);
                     
                     return Ok(token);

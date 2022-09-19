@@ -32,30 +32,29 @@ namespace TodoAPI.AuthMiddleware
             identity = null;
 
             string token = null;
-            string cookieToken = null;
 
             if (Request.Cookies.ContainsKey("JwtToken"))
             {
-                cookieToken = Request.Cookies["JwtToken"];
+                token = Request.Cookies["JwtToken"];
             }
-            
-            if (Request.Headers.ContainsKey("authorization"))
+            else if (Request.Headers.ContainsKey("authorization"))
             {
                 token = ((string)Request.Headers["authorization"]).Replace("Bearer ", "");
             }
 
-            if (token == null || cookieToken == null)
+            if (token == null)
             {
                 Logger.LogTrace("JWT AUTH FAILED. Invalid or expire token");
                 return false;
             }
 
             var response = AuthUtil.DecodeJwtToken(token, _configuration["Jwt:Key"]);
-            if (!response.IsSuccess)
+            if (!response.IsSuccess || Convert.ToDateTime(response.Data.Expiration) < DateTime.Now)
             {
                 Logger.LogTrace("JWT AUTH FAILED. {token} not authorized", token);
                 return false;
             }
+            
             var tokenData = response.Data;
 
             identity = new ClaimsIdentity(new List<Claim>
@@ -63,7 +62,8 @@ namespace TodoAPI.AuthMiddleware
                     new Claim(ClaimTypes.Sid, tokenData.UserId),
                     new Claim(ClaimTypes.Name, tokenData.Username),
                     new Claim(ClaimTypes.Role, tokenData.Role),
-                    new Claim(ClaimTypes.Email, tokenData.Email)
+                    new Claim(ClaimTypes.Email, tokenData.Email),
+                    new Claim(ClaimTypes.Expiration, tokenData.Expiration.ToString())
                 }, "JWT");
 
 
