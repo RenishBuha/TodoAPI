@@ -41,14 +41,14 @@ namespace TodoAPI.Controllers
                         Username = user.UserName,
                         Role = user.Role,
                         Email = user.Email,
-                        Expiration = DateTime.Now.AddMinutes(2),
+                        Expiration = DateTime.Now.AddHours(2),
                         IpAddress = "192.168.1.8",
                     };
 
                     var token = AuthUtil.EncodeToken(tokenData, _configuration["Jwt:Key"]);
 
                     CookieOptions cookieexpire = new CookieOptions();
-                    cookieexpire.Expires = DateTime.Now.AddMinutes(2);
+                    cookieexpire.Expires = DateTime.Now.AddHours(2);
                     Response.Cookies.Append("JwtToken", token, cookieexpire);
                     
                     return Ok(token);

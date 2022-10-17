@@ -29,6 +29,7 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<TodoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+//builder.Services.AddDbContext<TodoContext>(opt => opt.UseMySQL(builder.Configuration.GetConnectionString("DbConnection")));
 builder.Services.AddTransient<IToDoService, ToDoService>();
 
 builder.Services.AddAuthentication(options =>
